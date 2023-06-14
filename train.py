@@ -23,6 +23,24 @@ from tokenizers.pre_tokenizers import Whitespace
 import torchmetrics
 from torch.utils.tensorboard import SummaryWriter
 
+# Accuracy Code. Using METEORR Score
+# ------------------------------------------------------------------------------------------
+import nltk
+from nltk.translate.meteor_score import meteor_score
+nltk.download('punkt')
+nltk.download('wordnet')
+nltk.download('omw-1.4')
+
+def tokenize_sentence(sentence):
+    return nltk.word_tokenize(sentence)
+
+def calculate_meteor_score(target_sentence, predicted_sentence):
+    target_tokens = tokenize_sentence(target_sentence)
+    predicted_tokens = tokenize_sentence(predicted_sentence)
+    return meteor_score([target_tokens], predicted_tokens)
+
+# ----------------------------------------------------------------------------------------------
+
 def greedy_decode(model, source, source_mask, tokenizer_src, tokenizer_tgt, max_len, device):
     sos_idx = tokenizer_tgt.token_to_id('[SOS]')
     eos_idx = tokenizer_tgt.token_to_id('[EOS]')
@@ -96,6 +114,8 @@ def run_validation(model, validation_ds, tokenizer_src, tokenizer_tgt, max_len, 
             print_msg(f"{f'SOURCE: ':>12}{source_text}")
             print_msg(f"{f'TARGET: ':>12}{target_text}")
             print_msg(f"{f'PREDICTED: ':>12}{model_out_text}")
+            score = calculate_meteor_score(target_text, model_out_text)
+            print("METEOR Score:", score)
 
             if count == num_examples:
                 print_msg('-'*console_width)
