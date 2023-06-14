@@ -26,7 +26,8 @@ from torch.utils.tensorboard import SummaryWriter
 # Accuracy Code. Using METEORR Score
 # ------------------------------------------------------------------------------------------
 import nltk
-from nltk.translate.meteor_score import meteor_score
+# from nltk.translate.meteor_score import meteor_score
+from nltk.translate import meteor_score
 nltk.download('punkt')
 nltk.download('wordnet')
 nltk.download('omw-1.4')
